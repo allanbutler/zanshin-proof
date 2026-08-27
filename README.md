@@ -16,19 +16,19 @@ The repository currently supports:
 - Machine-readable JSON reports
 - CI-safe exit codes
 - A recommendation-model example
+- Draft 2020-12 JSON Schemas for policies, evidence, and reports
+- Required provenance binding evidence to code, model, run, source, and collection time
 
 ## Try it
 
-Requires Python 3.11 or newer.
+Requires [uv](https://docs.astral.sh/uv/) and Python 3.11 or newer.
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[dev]'
+uv sync --extra dev
 
-zanshin-proof evaluate \
-  --policy examples/ymal/policy.yml \
-  --evidence examples/ymal/evidence.json \
+uv run zanshin-proof evaluate \
+  --policy examples/recommendation/policy.yml \
+  --evidence examples/recommendation/evidence.json \
   --output proof-report.json
 ```
 
@@ -36,11 +36,13 @@ The example passes its required gates and surfaces catalog coverage as a warning
 returns `0` for `pass` or `warn`, `1` when a required check blocks release, and `2` for invalid
 policy or evidence input.
 
+Use `uv run pytest`, `uv run ruff check .`, and `uv build` for verification and packaging.
+
 ## Policy example
 
 ```yaml
 version: 1
-project: ymal-personalization
+project: recommendation-ranking
 checks:
   - id: auc-regression
     type: metric_regression
@@ -65,11 +67,23 @@ checks:
 
 See [docs/architecture.md](docs/architecture.md) for system boundaries and planned integrations.
 
+## Evidence provenance
+
+Every evidence document must identify:
+
+- The complete Git commit SHA evaluated
+- The model name and version
+- The originating run system and run ID
+- The collector and collection timestamp
+- At least one versioned source table, dataset, file, API, or manual input
+
+This provenance is validated before any checks run and is copied unchanged into the report. The
+schemas are packaged under `src/zanshin_proof/schemas/` and enforced at runtime.
+
 ## Near-term roadmap
 
-1. Formal JSON schemas for policy, evidence, and reports
-2. Evidence provenance and signed evidence bundles
-3. GitHub pull-request check integration
-4. MLflow candidate-versus-baseline collector
-5. Databricks job and release-pin verification
-6. Human approval workflow and review UI
+1. Cryptographically signed evidence bundles
+2. GitHub pull-request check integration
+3. MLflow candidate-versus-baseline collector
+4. Databricks job and release-pin verification
+5. Human approval workflow and review UI

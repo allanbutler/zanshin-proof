@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zanshin.dev/schemas/proof/policy-v1.schema.json",
+  "title": "Zanshin Proof Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "project", "checks"],
+  "properties": {
+    "version": {"const": 1},
+    "project": {"type": "string", "minLength": 1},
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {"$ref": "#/$defs/booleanCheck"},
+          {"$ref": "#/$defs/regressionCheck"},
+          {"$ref": "#/$defs/maxCheck"},
+          {"$ref": "#/$defs/minCheck"}
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "common": {
+      "type": "object",
+      "required": ["id", "type"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"type": "string"},
+        "required": {"type": "boolean", "default": true},
+        "description": {"type": "string"}
+      }
+    },
+    "booleanCheck": {
+      "allOf": [
+        {"$ref": "#/$defs/common"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "type", "path"],
+          "properties": {
+            "id": {"type": "string", "minLength": 1},
+            "type": {"const": "boolean"},
+            "required": {"type": "boolean"},
+            "description": {"type": "string"},
+            "path": {"type": "string", "minLength": 1},
+            "equals": {"type": "boolean", "default": true}
+          }
+        }
+      ]
+    },
+    "regressionCheck": {
+      "allOf": [
+        {"$ref": "#/$defs/common"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "type", "candidate", "baseline", "tolerance"],
+          "properties": {
+            "id": {"type": "string", "minLength": 1},
+            "type": {"const": "metric_regression"},
+            "required": {"type": "boolean"},
+            "description": {"type": "string"},
+            "candidate": {"type": "string", "minLength": 1},
+            "baseline": {"type": "string", "minLength": 1},
+            "tolerance": {"type": "number", "minimum": 0}
+          }
+        }
+      ]
+    },
+    "maxCheck": {
+      "allOf": [
+        {"$ref": "#/$defs/common"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "type", "path", "maximum"],
+          "properties": {
+            "id": {"type": "string", "minLength": 1},
+            "type": {"const": "max_value"},
+            "required": {"type": "boolean"},
+            "description": {"type": "string"},
+            "path": {"type": "string", "minLength": 1},
+            "maximum": {"type": "number"}
+          }
+        }
+      ]
+    },
+    "minCheck": {
+      "allOf": [
+        {"$ref": "#/$defs/common"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "type", "path", "minimum"],
+          "properties": {
+            "id": {"type": "string", "minLength": 1},
+            "type": {"const": "min_value"},
+            "required": {"type": "boolean"},
+            "description": {"type": "string"},
+            "path": {"type": "string", "minLength": 1},
+            "minimum": {"type": "number"}
+          }
+        }
+      ]
+    }
+  }
+}
