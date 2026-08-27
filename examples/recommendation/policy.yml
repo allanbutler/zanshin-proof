@@ -1,0 +1,33 @@
+version: 1
+project: recommendation-ranking
+
+checks:
+  - id: schema-compatible
+    type: boolean
+    description: Candidate features remain compatible with serving.
+    path: facts.schema_compatible
+
+  - id: reproducible-training
+    type: boolean
+    description: The candidate can be reproduced from pinned inputs.
+    path: facts.reproducible_training
+
+  - id: auc-regression
+    type: metric_regression
+    description: AUC cannot fall more than five thousandths below baseline.
+    candidate: metrics.candidate.auc
+    baseline: metrics.baseline.auc
+    tolerance: 0.005
+
+  - id: calibration-error
+    type: max_value
+    description: Expected calibration error must remain below the release threshold.
+    path: metrics.candidate.ece
+    maximum: 0.03
+
+  - id: catalog-coverage
+    type: min_value
+    required: false
+    description: A coverage miss should be visible but does not yet block release.
+    path: metrics.candidate.catalog_coverage
+    minimum: 0.65

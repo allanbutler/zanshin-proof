@@ -1,0 +1,40 @@
+{
+  "provenance": {
+    "commit_sha": "521134ee3e9602a0e04843e2f5d1f60909df3173",
+    "collected_at": "2026-08-26T23:45:00Z",
+    "collector": {
+      "name": "zanshin-proof-example",
+      "version": "0.1.0"
+    },
+    "model": {
+      "name": "recommendation-ranking",
+      "version": "candidate-42"
+    },
+    "run": {
+      "system": "mlflow",
+      "id": "run-42",
+      "uri": "mlflow://experiments/recommendation-ranking/runs/run-42"
+    },
+    "sources": [
+      {
+        "type": "table",
+        "uri": "databricks://catalog/schema/recommendation_training_snapshot",
+        "version": "2026-08-26"
+      }
+    ]
+  },
+  "facts": {
+    "schema_compatible": true,
+    "reproducible_training": true
+  },
+  "metrics": {
+    "baseline": {
+      "auc": 0.812
+    },
+    "candidate": {
+      "auc": 0.809,
+      "ece": 0.024,
+      "catalog_coverage": 0.61
+    }
+  }
+}

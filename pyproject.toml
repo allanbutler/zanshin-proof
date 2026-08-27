@@ -1,0 +1,31 @@
+[build-system]
+requires = ["uv_build>=0.11.33,<0.12.0"]
+build-backend = "uv_build"
+
+[project]
+name = "zanshin-proof"
+version = "0.1.0"
+description = "Evidence gates for agent-assisted machine learning changes"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "jsonschema[format]>=4.25,<5",
+  "PyYAML>=6.0,<7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9", "ruff>=0.12,<1"]
+
+[project.scripts]
+zanshin-proof = "zanshin_proof.cli:main"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
